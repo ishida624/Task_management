@@ -3,8 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\User;
-use App\Admin;
+use App\Users;
 use Illuminate\Support\Facades\Auth;
 
 class TokenMiddlewar
@@ -19,10 +18,10 @@ class TokenMiddlewar
     public function handle($request, Closure $next)
     {
         $token = $request->header('userToken');
-        $data = Admin::where('remember_token', $token)->first();
-        $request->merge(['UserData' => $data]);
-        if (isset($data->remember_token)) {
-            $tokenTime =  strtotime('+1 day', strtotime($data->login_time));
+        $UserData = Users::where('remember_token', $token)->first();
+        $request->merge(['UserData' => $UserData]);
+        if (isset($UserData->remember_token)) {
+            $tokenTime =  strtotime('+1 day', strtotime($UserData->login_time));
             if ($tokenTime < time()) {
                 return response()->json(['message' => 'Unauthorized', 'reason' => 'token out time'], 401);
             }
@@ -30,17 +29,5 @@ class TokenMiddlewar
         } else {
             return response()->json(['message' => 'Unauthorized', 'reason' => 'token false'], 401);
         }
-        // foreach ($data as $value) {
-        //     // echo "$value";
-        //     if ($value->remember_token == $cookie) {
-        //         // echo "Hello";
-        //         return $next($request);
-        //     } else {
-        //         $tokenAuth = 0;
-        //     }
-        // }
-        // if ($tokenAuth == 0) {
-        //     return redirect('LoginPage');
-        // }
     }
 }

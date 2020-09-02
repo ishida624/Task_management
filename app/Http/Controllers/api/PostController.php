@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TodosRequest;
-use App\T1;
+use App\Task;
 
 class PostController extends Controller
 {
@@ -17,7 +17,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $index = T1::all();
+        $index = Task::all();
         // return $index;
         return response($index, 200);
     }
@@ -32,7 +32,7 @@ class PostController extends Controller
     {
         $item = $request->item;
         $user = $request->UserData->admin;
-        $store = T1::create(['item' => $item, 'status' => '未完成', 'update_user' => $user]);
+        $store = Task::create(['item' => $item, 'status' => '未完成', 'update_user' => $user]);
         return response()->json(['message' => 'create successfully', 'content' => $store], 201);
     }
 
@@ -44,7 +44,7 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        $show = T1::find($id);
+        $show = Task::find($id);
         if (!$show) {
             return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
         }
@@ -66,7 +66,7 @@ class PostController extends Controller
         // if (!$item) {
         //     return response()->json(['message' =>'bad request' , 'reason' => 'item can not null' ], 400);
         // }
-        $update = T1::find($id);
+        $update = Task::find($id);
         if (!$update) {
             return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
         }
@@ -88,7 +88,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        $delete = T1::find($id);
+        $delete = Task::find($id);
         if (!$delete) {
             return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
         }
