@@ -40,7 +40,7 @@ class CardController extends Controller
         $store = Card::create(['card_name' => $CardName, 'create_user' => $user,]);
         $CardId = $store->id;
         Groups::create(['users_id' => $UserId, 'card_id' => $CardId]);
-        return response()->json(['message' => 'create successfully', 'content' => $store], 201);
+        return response()->json(['status' => true, 'data' => $store], 201);
     }
 
     /**
