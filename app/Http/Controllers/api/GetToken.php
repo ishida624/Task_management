@@ -75,11 +75,10 @@ class GetToken extends Controller
         $dbUser = Users::where('email', $email)->first();
 
         #判斷帳號是否存在
-        if (isset($dbUser)) {
-            $dbPassword = $dbUser->password;
-        } else {
+        if (!$dbUser) {
             return response()->json(['message' => 'bad request', 'reason' => 'Username or password false'], 400);
         }
+        $dbPassword = $dbUser->password;
 
         #判斷密碼是否正確、給亂數token
         if (password_verify($password, $dbPassword)) {

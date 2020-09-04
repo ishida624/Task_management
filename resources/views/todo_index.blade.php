@@ -23,6 +23,12 @@
     <!-- <div class="mid"> -->
     <!-- <p>hello world</p> -->
 
+    <form class="mid form" action="{{ url("/api/upload") }}" method="post" enctype="multipart/form-data">
+        檔案名稱:<input type="file" name="file" id="file" /><br />
+        <input type="submit" name="submit" value="上傳檔案" />
+    </form>
+    <br>
+
     <form class="form " action="{{ url("/create") }}" method="post">
         {{ csrf_field() }}
         <input type="text" name="item" placeholder="輸入項目">

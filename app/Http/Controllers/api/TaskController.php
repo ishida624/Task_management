@@ -7,8 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TodosRequest;
 use App\Task;
+use App\Users;
+use App\Card;
 
-class PostController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -30,9 +32,19 @@ class PostController extends Controller
      */
     public function store(TodosRequest $request)
     {
+        // dd($request);
         $item = $request->item;
-        $user = $request->UserData->admin;
-        $store = Task::create(['item' => $item, 'status' => '未完成', 'update_user' => $user]);
+        $tag = $request->tag;
+        $image = $request->image;
+        $CardId = $request->card_id;
+        $description = $request->description;
+        $user = $request->UserData->username;
+        $store = Task::create([
+            'item' => $item, 'status' => false,
+            'create_user' => $user, 'update_user' => $user,
+            'description' => $description, 'tag' => $tag,
+            'image' => $image, 'card_id' => $CardId,
+        ]);
         return response()->json(['message' => 'create successfully', 'content' => $store], 201);
     }
 
@@ -95,5 +107,11 @@ class PostController extends Controller
         $delete->delete();
         return response()->json(['message' => 'delete successfully'], 200);
         // return 'delete successfully';
+    }
+    public function upload(Request $request)
+    {
+        dd($request);
+        // $User = Users::find(2);
+        // $User::create(['image' => ''])
     }
 }

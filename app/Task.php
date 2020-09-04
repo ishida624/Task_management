@@ -9,6 +9,6 @@ class Task extends Model
     protected $table = 'task';
     // public $incrementing = 'false';
     public $primaryKey = 'id';
-    public $timestamps = false;
-    protected $fillable = ['item', 'status', 'create_user', 'description', 'update_user', 'tage', 'image',];
+    // public $timestamps = false;
+    protected $fillable = ['item', 'status', 'create_user', 'description', 'update_user', 'tage', 'image', 'card_id'];
 }

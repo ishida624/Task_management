@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Users extends Model
 {
-    protected $table = 'user';
+    protected $table = 'users';
     // public $incrementing = 'false';
     public $primaryKey = 'id';
     // public $timestamps = false;
@@ -14,4 +14,8 @@ class Users extends Model
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function ShowCards()
+    {
+        return $this->belongsToMany('App\Card', 'groups', 'users_id', 'card_id');
+    }
 }

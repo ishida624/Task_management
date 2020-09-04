@@ -15,10 +15,10 @@ class Group extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('user');
+            $table->unsignedBigInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('card_id');
-            $table->foreign('card_id')->references('id')->on('card');
+            $table->foreign('card_id')->references('id')->on('card')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

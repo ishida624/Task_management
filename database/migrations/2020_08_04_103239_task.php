@@ -16,14 +16,14 @@ class Task extends Migration
         Schema::create('task', function (Blueprint $table) {
             $table->id();
             $table->string('item');
-            $table->string('status');
+            $table->boolean('status');
             $table->string('create_user');
             $table->string('update_user');
-            $table->string('description');
-            $table->string('tag');
-            $table->string('image');
+            $table->string('description')->nullable();
+            $table->string('tag')->nullable();
+            $table->string('image')->nullable();
             $table->unsignedBigInteger('card_id');
-            $table->foreign('card_id')->references('id')->on('card');
+            $table->foreign('card_id')->references('id')->on('card')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

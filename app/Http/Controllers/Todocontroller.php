@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\T1;
+use App\Task;
 use Illuminate\Support\Str;
 use App\Http\Requests\TodosRequest;
 
@@ -18,7 +18,7 @@ class Todocontroller extends Controller
     // }
     public function readTable()
     {
-        $data = T1::all();
+        $data = Task::all();
         return  view('todo_index', ['data' => $data]);
     }
 
@@ -29,7 +29,7 @@ class Todocontroller extends Controller
         $user = Auth::user()->name;
         $id = $update->input('no');
         $item = $update->input('item');
-        T1::find($id)->update(['item' => "$item", 'update_user' => 'admin', 'update_user' => $user]);
+        Task::find($id)->update(['item' => "$item", 'update_user' => 'admin', 'update_user' => $user]);
         //return redirect()->back()->with('message', 'please login');
         //return 'please login';
         return redirect('todolist');
@@ -38,7 +38,7 @@ class Todocontroller extends Controller
     public function delete(Request $delete)
     {
         $id = $delete->input('id');
-        T1::find($id)->delete();
+        Task::find($id)->delete();
         return redirect('todolist');
         // return $delete;
     }
@@ -63,7 +63,7 @@ class Todocontroller extends Controller
         //                         ->withErrors($validator)
         //                         ->withInput();
         // }
-        T1::create(['item' => "$item", 'status' => '未完成', 'update_user' => 'admin', 'update_user' => $user]);
+        Task::create(['item' => "$item", 'status' => '未完成', 'update_user' => 'admin', 'update_user' => $user]);
         return redirect('todolist');
     }
     public function complete(Request $complete)
@@ -74,7 +74,7 @@ class Todocontroller extends Controller
         // dd($user->admin);
         $user = Auth::user()->name;
         $id = $complete->input('id');
-        $data = T1::find($id);
+        $data = Task::find($id);
         $status = $data->status;
         if ($status == '未完成') {
             $data->update(['status' => '已完成', 'update_user' => $user]);
