@@ -44,18 +44,18 @@ class GetToken extends Controller
             if (isset($error['email'][0])) {
                 $reason3 =  $error['email'][0];
             }
-            return response()->json(['message' => 'bad request', 'reason' => $reason1 . $reason2 . $reason3], 400);
+            return response()->json(['status' => false, 'error' => $reason1 . $reason2 . $reason3], 400);
         }
 
         #尋找是否有相同帳號名
         $User = Users::where('username', $username)->first();
         if (isset($User)) {
-            return response()->json(['message' => 'bad request', 'reason' => 'This account already exists'], 400);
+            return response()->json(['status' => false, 'error' => 'This account already exists'], 400);
         }
         #尋找是否有相同email
         $SameEmail = Users::where('email', $email)->first();
         if (isset($SameEmail)) {
-            return response()->json(['message' => 'bad request', 'reason' => 'This email already exists'], 400);
+            return response()->json(['status' => false, 'error' => 'This email already exists'], 400);
         }
 
         #密碼加密後加入資料庫
@@ -65,7 +65,7 @@ class GetToken extends Controller
             'remember_token' => 'new user',
             'email' => $email,
         ]);
-        return response()->json(['message' => 'Register successflly'], 201);
+        return response()->json(['status' => true], 201);
     }
     public function login(Request $login)
     {
@@ -76,7 +76,7 @@ class GetToken extends Controller
 
         #判斷帳號是否存在
         if (!$dbUser) {
-            return response()->json(['message' => 'bad request', 'reason' => 'Username or password false'], 400);
+            return response()->json(['status' => false, 'error' => 'email or password false'], 400);
         }
         $dbPassword = $dbUser->password;
 
@@ -94,9 +94,9 @@ class GetToken extends Controller
             } while ($sameToken);
 
             Users::where('email', $email)->update(['remember_token' => $token]);
-            return response()->json(['message' => 'login successfully'], 200)->header('userToken', $token);
+            return response()->json(['status' => true], 200)->header('userToken', $token);
         } else {
-            return response()->json(['message' => 'bad request', 'reason' => 'Username or password false'], 400);
+            return response()->json(['status' => false, 'error' => 'email or password false'], 400);
         }
     }
 }

@@ -30,7 +30,7 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodosRequest $request)
+    public function store(Request $request)
     {
         // dd($request);
         $item = $request->item;
@@ -45,7 +45,7 @@ class TaskController extends Controller
             'description' => $description, 'tag' => $tag,
             'image' => $image, 'card_id' => $CardId,
         ]);
-        return response()->json(['message' => 'create successfully', 'content' => $store], 201);
+        return response()->json(['status' => 'true', 'data' => $store], 201);
     }
 
     /**

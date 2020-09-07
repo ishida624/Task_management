@@ -28,11 +28,11 @@ class TokenMiddlewar
             // dd(Carbon::now(), $tokenTime);
             #判斷token是否過期
             if ($tokenTime < Carbon::now()) {
-                return response()->json(['message' => 'Unauthorized', 'reason' => 'token out time'], 401);
+                return response()->json(['status' => false, 'error' => 'token out time'], 401);
             }
             return $next($request);
         } else {
-            return response()->json(['message' => 'Unauthorized', 'reason' => 'token false'], 401);
+            return response()->json(['status' => false, 'error' => 'token false'], 401);
         }
     }
 }

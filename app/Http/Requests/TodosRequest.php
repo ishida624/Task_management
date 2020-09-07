@@ -28,20 +28,20 @@ class TodosRequest extends FormRequest
     {
         // $this->redirect=url('todolist');
         return [
-            'item' => 'required|max:255'
+            'card_name' => 'required|max:255'
         ];
     }
     public function messages()
     {
         return [
-            'item.required' => 'item can not null.' ,
-            'item.max' => 'item can not over 255 characters'
-    ];
+            'card_name.required' => 'card_name can not null.',
+            'card_name.max' => 'card_name can not over 255 characters'
+        ];
     }
     protected function failedValidation(Validator $validator)
     {
         $message = $validator->errors()->getMessages();
-        throw new HttpResponseException(response()->json(['message'=>'bad request','reason'=>$message['item']['0']], 400));
+        throw new HttpResponseException(response()->json(['status' => false, 'error' => $message['card_name']['0']], 400));
     }
     // public function getValidatorInstance()
     // {

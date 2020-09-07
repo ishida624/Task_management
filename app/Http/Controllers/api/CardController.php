@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\TodosRequest;
 use App\Users;
 use App\Card;
 use App\Groups;
@@ -32,7 +33,7 @@ class CardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TodosRequest $request)
     {
         $CardName = $request->card_name;
         $user = $request->UserData->username;
@@ -58,10 +59,6 @@ class CardController extends Controller
         } else {
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
-        // return $cards;
-        // foreach ($cards as $card) {
-        //     $card->ShowTasks;
-        // }
         return response()->json(['status' => true, 'data' => $cards], 200);
     }
 
