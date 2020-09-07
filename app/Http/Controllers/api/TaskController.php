@@ -58,9 +58,8 @@ class TaskController extends Controller
     {
         $show = Task::find($id);
         if (!$show) {
-            return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'item search not found'], 400);
         }
-        // return $show;
         return response($show, 200);
     }
 
@@ -80,7 +79,7 @@ class TaskController extends Controller
         // }
         $update = Task::find($id);
         if (!$update) {
-            return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
+            return response()->json(['status' => false, 'data' => 'item search not found'], 400);
         }
         // $validator = $request->getValidatorInstance();
         // if ($validator->fails()) {
@@ -88,7 +87,7 @@ class TaskController extends Controller
         //     return response()->json(['message' =>'bad request' , 'error' =>$errorMessage], 400);
         // }
         $update->update(['item' => "$item", 'update_user' => $user]);
-        return response()->json(['message' => 'update successfully', 'content' => $update], 200);
+        return response()->json(['status' => true, 'data' => $update], 200);
         // return 'update successfully';
     }
 
@@ -102,10 +101,10 @@ class TaskController extends Controller
     {
         $delete = Task::find($id);
         if (!$delete) {
-            return response()->json(['message' => 'bad request', 'reason' => 'item search not found'], 400);
+            return response()->json(['status' => true, 'error' => 'item search not found'], 400);
         }
         $delete->delete();
-        return response()->json(['message' => 'delete successfully'], 200);
+        return response()->json(['status' => true], 200);
         // return 'delete successfully';
     }
     public function upload(Request $request)

@@ -26,7 +26,6 @@ class TodosRequest extends FormRequest
      */
     public function rules()
     {
-        // $this->redirect=url('todolist');
         return [
             'card_name' => 'required|max:255'
         ];
