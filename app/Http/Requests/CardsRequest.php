@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class TodosRequest extends FormRequest
+class CardsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

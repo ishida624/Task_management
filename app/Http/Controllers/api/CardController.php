@@ -4,7 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\TodosRequest;
+use App\Http\Requests\CardsRequest;
 use App\Users;
 use App\Card;
 use App\Groups;
@@ -33,7 +33,7 @@ class CardController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodosRequest $request)
+    public function store(CardsRequest $request)
     {
         $CardName = $request->card_name;
         $user = $request->UserData->username;
@@ -69,7 +69,7 @@ class CardController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CardsRequest $request, $id)
     {
         $UserData = $request->UserData;
         $CardName = $request->card_name;

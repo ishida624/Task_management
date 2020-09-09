@@ -5,9 +5,8 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\TodosRequest;
+use App\Http\Requests\TasksRequest;
 use App\Task;
-use App\Users;
 use App\Card;
 
 class TaskController extends Controller
@@ -21,7 +20,7 @@ class TaskController extends Controller
     {
         $index = Task::all();
         // return $index;
-        return response($index, 200);
+        return response(['status' => true, 'data' => $index], 200);
     }
 
     /**
@@ -30,22 +29,25 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(TasksRequest $request)
     {
-        // dd($request);
         $item = $request->item;
         $tag = $request->tag;
-        $image = $request->image;
+        // $image = $request->image;
         $CardId = $request->card_id;
         $description = $request->description;
         $user = $request->UserData->username;
+
+        if (!Card::find($CardId)) {
+            return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
+        }
         $store = Task::create([
             'item' => $item, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
-            'image' => $image, 'card_id' => $CardId,
+            'card_id' => $CardId,
         ]);
-        return response()->json(['status' => 'true', 'data' => $store], 201);
+        return response()->json(['status' => true, 'data' => $store], 201);
     }
 
     /**
@@ -70,23 +72,31 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TodosRequest $request, $id)
+    public function update(TasksRequest $request, $id)
     {
         $item = $request->item;
-        $user = $request->UserData->admin;
-        // if (!$item) {
-        //     return response()->json(['message' =>'bad request' , 'reason' => 'item can not null' ], 400);
-        // }
+        $user = $request->UserData->username;
+        $tag = $request->tag;
+        // $image = $request->image;
+        $description = $request->description;
+        $status = $request->status;
+        $CardId = $request->card_id;
         $update = Task::find($id);
         if (!$update) {
-            return response()->json(['status' => false, 'data' => 'item search not found'], 400);
+            return response()->json(['status' => false, 'data' => 'task search not found'], 400);
         }
-        // $validator = $request->getValidatorInstance();
-        // if ($validator->fails()) {
-        //     $errorMessage = $validator->getMessageBag()->getMessages();
-        //     return response()->json(['message' =>'bad request' , 'error' =>$errorMessage], 400);
-        // }
-        $update->update(['item' => "$item", 'update_user' => $user]);
+        if (!Card::find($CardId)) {
+            return response()->json(['status' => false, 'data' => 'card search not found'], 400);
+        }
+
+        $update->update([
+            'item' => "$item", 'update_user' => $user,
+            'item' => $item, 'status' => $status,
+            'update_user' => $user,
+            'description' => $description, 'tag' => $tag,
+            // 'image' => $image, 
+            'card_id' => $CardId,
+        ]);
         return response()->json(['status' => true, 'data' => $update], 200);
         // return 'update successfully';
     }
@@ -101,7 +111,7 @@ class TaskController extends Controller
     {
         $delete = Task::find($id);
         if (!$delete) {
-            return response()->json(['status' => true, 'error' => 'item search not found'], 400);
+            return response()->json(['status' => true, 'error' => 'task search not found'], 400);
         }
         $delete->delete();
         return response()->json(['status' => true], 200);
