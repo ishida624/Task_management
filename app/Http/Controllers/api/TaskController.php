@@ -47,7 +47,7 @@ class TaskController extends Controller
             'description' => $description, 'tag' => $tag,
             'card_id' => $CardId,
         ]);
-        return response()->json(['status' => true, 'data' => $store], 201);
+        return response()->json(['status' => true, 'task_data' => $store], 201);
     }
 
     /**
@@ -62,7 +62,7 @@ class TaskController extends Controller
         if (!$show) {
             return response()->json(['status' => false, 'error' => 'item search not found'], 400);
         }
-        return response($show, 200);
+        return response(['status' => true, 'task_data' => $show], 200);
     }
 
     /**
@@ -83,10 +83,10 @@ class TaskController extends Controller
         $CardId = $request->card_id;
         $update = Task::find($id);
         if (!$update) {
-            return response()->json(['status' => false, 'data' => 'task search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
         if (!Card::find($CardId)) {
-            return response()->json(['status' => false, 'data' => 'card search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
 
         $update->update([
@@ -97,7 +97,7 @@ class TaskController extends Controller
             // 'image' => $image, 
             'card_id' => $CardId,
         ]);
-        return response()->json(['status' => true, 'data' => $update], 200);
+        return response()->json(['status' => true, 'task_data' => $update], 200);
         // return 'update successfully';
     }
 

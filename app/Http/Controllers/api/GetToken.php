@@ -94,7 +94,7 @@ class GetToken extends Controller
             } while ($sameToken);
 
             Users::where('email', $email)->update(['remember_token' => $token]);
-            return response()->json(['status' => true, 'data' => ['userToken' => $token]], 200);
+            return response()->json(['status' => true, 'login_data' => ['userToken' => $token]], 200);
         } else {
             return response()->json(['status' => false, 'error' => 'email or password false'], 400);
         }

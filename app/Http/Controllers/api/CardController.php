@@ -24,7 +24,7 @@ class CardController extends Controller
         foreach ($cards as $card) {
             $card->ShowTasks;
         }
-        return response()->json(['status' => true, 'data' => $UserData], 200);
+        return response()->json(['status' => true, 'card_data' => $UserData], 200);
     }
 
     /**
@@ -41,7 +41,7 @@ class CardController extends Controller
         $store = Card::create(['card_name' => $CardName, 'create_user' => $user,]);
         $CardId = $store->id;
         Groups::create(['users_id' => $UserId, 'card_id' => $CardId]);
-        return response()->json(['status' => true, 'data' => $store], 201);
+        return response()->json(['status' => true, 'card_data' => $store], 201);
     }
 
     /**
@@ -59,7 +59,7 @@ class CardController extends Controller
         } else {
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
-        return response()->json(['status' => true, 'data' => $cards], 200);
+        return response()->json(['status' => true, 'card_data' => $cards], 200);
     }
 
     /**
@@ -80,7 +80,7 @@ class CardController extends Controller
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
         $cards->update(['card_name' => $CardName]);
-        return response()->json(['status' => true, 'data' => $cards], 200);
+        return response()->json(['status' => true, 'card_data' => $cards], 200);
     }
 
     /**
