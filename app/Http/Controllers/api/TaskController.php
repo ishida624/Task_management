@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TasksRequest;
 use App\Task;
 use App\Card;
+use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
 {
@@ -19,8 +20,16 @@ class TaskController extends Controller
     public function index()
     {
         $index = Task::all();
-        // return $index;
-        return response(['status' => true, 'data' => $index], 200);
+
+        // foreach ($index as  $value) {
+        //     $path = $value->image;
+        //     if (isset($value->image)) {
+        //         // dd('../storage/app/' . $path);
+        //         $file = file_get_contents('../storage/app/' . $path);
+        //     }
+        // 
+        // return response()->file('../storage/app/image/task/test.jpeg');
+        return response(['status' => true, 'task_data' => $index], 200);
     }
 
     /**
@@ -32,21 +41,35 @@ class TaskController extends Controller
     public function store(TasksRequest $request)
     {
         $item = $request->item;
-        $tag = $request->tag;
-        // $image = $request->image;
         $CardId = $request->card_id;
-        $description = $request->description;
+        $tag = "";
+        if (isset($request->tag)) {
+            $tag = $request->tag;
+        }
+        $description = "";
+        if (isset($request->description)) {
+            $description = $request->description;
+        }
         $user = $request->UserData->username;
 
         if (!Card::find($CardId)) {
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
+        #上傳圖片
+        $path = "";
+        if ($request->hasFile('image')) {
+            $file = $request->image;
+            $path = $file->storeAs('image', 'task/' . $item . '.jpeg');
+        }
+        // dd($item, $user, $description, $tag, $path, $CardId);
         $store = Task::create([
             'item' => $item, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
+            'image' => $path,
             'card_id' => $CardId,
         ]);
+
         return response()->json(['status' => true, 'task_data' => $store], 201);
     }
 
@@ -98,7 +121,6 @@ class TaskController extends Controller
             'card_id' => $CardId,
         ]);
         return response()->json(['status' => true, 'task_data' => $update], 200);
-        // return 'update successfully';
     }
 
     /**
@@ -111,16 +133,22 @@ class TaskController extends Controller
     {
         $delete = Task::find($id);
         if (!$delete) {
-            return response()->json(['status' => true, 'error' => 'task search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
         $delete->delete();
         return response()->json(['status' => true], 200);
-        // return 'delete successfully';
     }
     public function upload(Request $request)
     {
-        dd($request);
-        // $User = Users::find(2);
-        // $User::create(['image' => ''])
+        // dd($request);
+        if ($request->hasFile('image')) {
+            $username = $request->UserData->username;
+            $file = $request->image;
+            $path = $file->storeAs('image', 'user/' . $username . '.jpeg');
+            // dd($request->card_id);
+            return response()->json(['status' => true,], 201);
+        } else {
+            return response()->json(['status' => false, 'error' => 'upload error'], 400);
+        }
     }
 }
