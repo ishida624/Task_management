@@ -10,6 +10,6 @@ class Task extends Model
     // public $incrementing = 'false';
     public $primaryKey = 'id';
     // public $timestamps = false;
-    protected $fillable = ['item', 'status', 'create_user', 'description', 'update_user', 'tag', 'image', 'card_id'];
+    protected $fillable = ['title', 'status', 'create_user', 'description', 'update_user', 'tag', 'image', 'card_id'];
     // protected $hidden = ['image'];
 }

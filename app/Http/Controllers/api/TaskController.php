@@ -20,7 +20,6 @@ class TaskController extends Controller
     public function index()
     {
         $index = Task::all();
-
         // foreach ($index as  $value) {
         //     $path = $value->image;
         //     if (isset($value->image)) {
@@ -40,7 +39,7 @@ class TaskController extends Controller
      */
     public function store(TasksRequest $request)
     {
-        $item = $request->item;
+        $title = $request->title;
         $CardId = $request->card_id;
         $tag = "";
         if (isset($request->tag)) {
@@ -59,11 +58,11 @@ class TaskController extends Controller
         $path = "";
         if ($request->hasFile('image')) {
             $file = $request->image;
-            $path = $file->storeAs('image', 'task/' . $item . '.jpeg');
+            $path = $file->storeAs('image', 'task/' . $title . '.jpeg');
         }
-        // dd($item, $user, $description, $tag, $path, $CardId);
+        // dd($title, $user, $description, $tag, $path, $CardId);
         $store = Task::create([
-            'item' => $item, 'status' => false,
+            'title' => $title, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
             'image' => $path,
@@ -83,7 +82,7 @@ class TaskController extends Controller
     {
         $show = Task::find($id);
         if (!$show) {
-            return response()->json(['status' => false, 'error' => 'item search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'title search not found'], 400);
         }
         return response(['status' => true, 'task_data' => $show], 200);
     }
@@ -97,7 +96,7 @@ class TaskController extends Controller
      */
     public function update(TasksRequest $request, $id)
     {
-        $item = $request->item;
+        $title = $request->title;
         $user = $request->UserData->username;
         $tag = $request->tag;
         // $image = $request->image;
@@ -113,8 +112,8 @@ class TaskController extends Controller
         }
 
         $update->update([
-            'item' => "$item", 'update_user' => $user,
-            'item' => $item, 'status' => $status,
+            'title' => "$title", 'update_user' => $user,
+            'title' => $title, 'status' => $status,
             'update_user' => $user,
             'description' => $description, 'tag' => $tag,
             // 'image' => $image, 
