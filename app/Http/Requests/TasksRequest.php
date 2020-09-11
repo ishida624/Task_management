@@ -28,7 +28,7 @@ class TasksRequest extends FormRequest
         return [
             'title' => 'required|max:40',
             'description' => 'max:255',
-            'status' => 'boolean',
+            'status' => 'max:5',
         ];
     }
 
