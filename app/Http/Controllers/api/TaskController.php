@@ -62,7 +62,7 @@ class TaskController extends Controller
         }
         // dd($title, $user, $description, $tag, $path, $CardId);
         $store = Task::create([
-            'title' => $title, 'status' => false,
+            'title' => $title, 'status' => "false",
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
             'image' => $path,
