@@ -16,7 +16,7 @@ class Task extends Migration
         Schema::create('task', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->char('status', 5);
+            $table->boolean('status');
             $table->string('create_user');
             $table->string('update_user');
             $table->string('description')->nullable();

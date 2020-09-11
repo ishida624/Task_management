@@ -12,4 +12,7 @@ class Task extends Model
     // public $timestamps = false;
     protected $fillable = ['title', 'status', 'create_user', 'description', 'update_user', 'tag', 'image', 'card_id'];
     // protected $hidden = ['image'];
+    protected $casts = [
+        'status' => 'boolean',
+    ];
 }
