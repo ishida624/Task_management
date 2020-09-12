@@ -4,10 +4,10 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\TasksRequest;
 use App\Task;
 use App\Card;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 
 class TaskController extends Controller
@@ -55,11 +55,14 @@ class TaskController extends Controller
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
         #上傳圖片
+        $now = Carbon::now();
+        // dd($now);
         $path = "";
         if ($request->hasFile('image')) {
             $file = $request->image;
-            $path = $file->storeAs('image', 'task/' . $title . '.jpeg');
+            $path = $file->storeAs('images', 'task/' . $now . ' ' . $title . ' ' . $user . '.jpeg');
         }
+        // dd($path);
         // dd($title, $user, $description, $tag, $path, $CardId);
         $store = Task::create([
             'title' => $title, 'status' => false,
@@ -133,6 +136,11 @@ class TaskController extends Controller
         $delete = Task::find($id);
         if (!$delete) {
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
+        }
+        // dd($delete->image);
+        if (isset($delete->image)) {
+            $image = $delete->image;
+            Storage::delete($image);
         }
         $delete->delete();
         return response()->json(['status' => true], 200);
