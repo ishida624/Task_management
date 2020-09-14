@@ -23,4 +23,4 @@ Route::middleware('LogsInfo', 'tokenAuth')->apiResource('card', 'api\CardControl
 Route::middleware('LogsInfo', 'tokenAuth')->apiResource('task', 'api\TaskController');
 Route::middleware('LogsInfo')->post('/userToken', 'api\GetToken@login');
 Route::middleware('LogsInfo')->post('/register', 'api\GetToken@register');
-Route::middleware('LogsInfo', 'tokenAuth')->post('/upload', 'api\TaskController@upload');
+Route::middleware('LogsInfo', 'tokenAuth')->post('/task/upload/{id}', 'api\TaskController@upload');

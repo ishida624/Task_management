@@ -40,37 +40,37 @@ class TaskController extends Controller
     public function store(TasksRequest $request)
     {
         $title = $request->title;
-        $CardId = $request->card_id;
-        $tag = "";
-        if (isset($request->tag)) {
-            $tag = $request->tag;
+        if (!$title) {
+            $title = 'new task';
         }
-        $description = "";
-        if (isset($request->description)) {
-            $description = $request->description;
+        $CardId = $request->card_id;
+        $tag = $request->tag;
+        if (!$tag) {
+            $tag = "";
+        }
+        $description = $request->description;
+        if (!$description) {
+            $description = "";
         }
         $user = $request->UserData->username;
-
+        // dd($title);
         if (!Card::find($CardId)) {
             return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
         }
-        #上傳圖片
-        $now = Carbon::now();
-        // dd($now);
-        $path = "";
-        if ($request->hasFile('image')) {
-            $file = $request->image;
-            $path = $file->storeAs('images', 'task/' . $now . ' ' . $title . ' ' . $user . '.jpeg');
-        }
-        // dd($path);
-        // dd($title, $user, $description, $tag, $path, $CardId);
         $store = Task::create([
             'title' => $title, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
-            'image' => $path,
             'card_id' => $CardId,
         ]);
+        // dd($store->id);
+        #上傳圖片
+        $now = Carbon::now();
+        if ($request->hasFile('image')) {
+            $file = $request->image;
+            $path = $file->storeAs('images', 'task/' . $now . ' task' . $store->id . '.jpeg');
+            $store->update(['image' => $path]);
+        }
 
         return response()->json(['status' => true, 'task_data' => $store], 201);
     }
@@ -99,30 +99,43 @@ class TaskController extends Controller
      */
     public function update(TasksRequest $request, $id)
     {
-        $title = $request->title;
         $user = $request->UserData->username;
-        $tag = $request->tag;
-        // $image = $request->image;
-        $description = $request->description;
-        $status = $request->status;
-        $CardId = $request->card_id;
-        $update = Task::find($id);
-        if (!$update) {
+        $task = Task::find($id);
+        $title = $task->title;
+        $tag = $task->tag;
+        $status = $task->status;
+        $cardId = $task->card_id;
+        $description = $task->description;
+        // dd($request->description);
+        if (isset($request->title)) {
+            $title = $request->title;
+        }
+        if (isset($request->tag)) {
+            $tag = $request->tag;
+        }
+        if (isset($request->status)) {
+            $status = $request->status;
+        }
+        if (isset($request->card_id)) {
+            $cardId = $request->card_id;
+        }
+        if (isset($request->description)) {
+            $description = $request->description;
+        }
+        if (!$task) {
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
-        if (!Card::find($CardId)) {
+        if (!Card::find($cardId)) {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
-
-        $update->update([
+        $task->update([
             'title' => "$title", 'update_user' => $user,
             'title' => $title, 'status' => $status,
             'update_user' => $user,
             'description' => $description, 'tag' => $tag,
-            // 'image' => $image, 
-            'card_id' => $CardId,
+            'card_id' => $cardId,
         ]);
-        return response()->json(['status' => true, 'task_data' => $update], 200);
+        return response()->json(['status' => true, 'task_data' => $task], 200);
     }
 
     /**
@@ -138,6 +151,7 @@ class TaskController extends Controller
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
         // dd($delete->image);
+        # 刪除圖片
         if (isset($delete->image)) {
             $image = $delete->image;
             Storage::delete($image);
@@ -145,14 +159,18 @@ class TaskController extends Controller
         $delete->delete();
         return response()->json(['status' => true], 200);
     }
-    public function upload(Request $request)
+    public function upload(Request $request, $id)
     {
-        // dd($request);
+        #更新圖片
+        $now = Carbon::now();
         if ($request->hasFile('image')) {
-            $username = $request->UserData->username;
             $file = $request->image;
-            $path = $file->storeAs('image', 'user/' . $username . '.jpeg');
-            // dd($request->card_id);
+            $task = Task::find($id);
+            $path = $file->storeAs('images', 'task/' . $now . ' task' . $id . '.jpeg');
+            $task->update(['image' => $path]);
+            #刪除原本的圖片
+            Storage::delete($task->image);
+            $file = $request->image;
             return response()->json(['status' => true,], 201);
         } else {
             return response()->json(['status' => false, 'error' => 'upload error'], 400);
