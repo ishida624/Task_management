@@ -57,17 +57,18 @@ class TaskController extends Controller
         $UserData = $request->UserData;
         $user = $UserData->username;
         $cards = $UserData->ShowCards;
-        foreach ($cards as $card) {
-            $task[] = $card->ShowTasks;
-        }
         // dd($title);
-        // if (!$task->where('card_id', $CardId)) {
-        //     return response()->json(['status' => false, 'error' => 'card search not found'], 400);
-        // }
-        if (!Card::find($CardId)) {
+        // dd($cards->find($CardId)->ShowTasks);
+        $card = $cards->find($CardId);
+        if (isset($card)) {
+            $task = $card->ShowTasks;
+        } else {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
-        $store = Task::create([
+        // if (!Card::find($CardId)) {
+        //     return response()->json(['status' => false, 'error' => 'card search not found'], 400);
+        // }
+        $store = $task[0]->create([
             'title' => $title, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
