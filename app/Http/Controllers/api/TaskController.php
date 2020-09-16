@@ -24,7 +24,12 @@ class TaskController extends Controller
         foreach ($cards as $card) {
             $task[] = $card->ShowTasks;
         }
-        return response(['status' => true, 'task_data' => $task], 200);
+        foreach ($task as $value1) {
+            foreach ($value1 as $value2) {
+                $data[] = $value2;
+            }
+        }
+        return response()->json(['status' => true, 'task_data' => $data], 200);
     }
 
     /**
@@ -51,7 +56,14 @@ class TaskController extends Controller
 
         $UserData = $request->UserData;
         $user = $UserData->username;
+        $cards = $UserData->ShowCards;
+        foreach ($cards as $card) {
+            $task[] = $card->ShowTasks;
+        }
         // dd($title);
+        // if (!$task->where('card_id', $CardId)) {
+        //     return response()->json(['status' => false, 'error' => 'card search not found'], 400);
+        // }
         if (!Card::find($CardId)) {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
