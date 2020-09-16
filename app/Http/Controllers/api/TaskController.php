@@ -17,18 +17,14 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $index = Task::all();
-        // foreach ($index as  $value) {
-        //     $path = $value->image;
-        //     if (isset($value->image)) {
-        //         // dd('../storage/app/' . $path);
-        //         $file = file_get_contents('../storage/app/' . $path);
-        //     }
-        // 
-        // return response()->file('../storage/app/image/task/test.jpeg');
-        return response(['status' => true, 'task_data' => $index], 200);
+        $UserData = $request->UserData;
+        $cards = $UserData->ShowCards;
+        foreach ($cards as $card) {
+            $task[] = $card->ShowTasks;
+        }
+        return response(['status' => true, 'task_data' => $task], 200);
     }
 
     /**
@@ -52,10 +48,12 @@ class TaskController extends Controller
         if (!$description) {
             $description = "";
         }
-        $user = $request->UserData->username;
+
+        $UserData = $request->UserData;
+        $user = $UserData->username;
         // dd($title);
         if (!Card::find($CardId)) {
-            return response()->json(['status' => false, 'error' => 'card serch not found'], 400);
+            return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
         $store = Task::create([
             'title' => $title, 'status' => false,
