@@ -14,13 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 // Route::get('/todolist', 'PostController@index');
 // Route::middleware('LogsInfo')->apiResource('task', 'api\PostController');
 Route::middleware('LogsInfo', 'tokenAuth')->apiResource('card', 'api\CardController');
 Route::middleware('LogsInfo', 'tokenAuth')->apiResource('task', 'api\TaskController');
+Route::middleware('LogsInfo', 'tokenAuth')->put('user/', 'api\UserController@update');
+Route::middleware('LogsInfo', 'tokenAuth')->get('user/', 'api\UserController@index');
 Route::middleware('LogsInfo')->post('/userToken', 'api\GetToken@login');
 Route::middleware('LogsInfo')->post('/register', 'api\GetToken@register');
 // Route::middleware('LogsInfo', 'tokenAuth')->post('/task/upload/{id}', 'api\TaskController@upload');

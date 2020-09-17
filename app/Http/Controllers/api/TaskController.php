@@ -45,6 +45,8 @@ class TaskController extends Controller
             $title = 'new task';
         }
         $CardId = $request->card_id;
+
+        // dd($CardId);
         $tag = $request->tag;
         if (!$tag) {
             $tag = "";
@@ -71,7 +73,7 @@ class TaskController extends Controller
             'description' => $description, 'tag' => $tag,
             'card_id' => $CardId,
         ]);
-        // dd($store->id);
+        // dd($store->card_id);
         #上傳圖片
         $now = Carbon::now();
         if ($request->hasFile('image')) {
@@ -93,7 +95,7 @@ class TaskController extends Controller
     {
         $show = Task::find($id);
         if (!$show) {
-            return response()->json(['status' => false, 'error' => 'title search not found'], 400);
+            return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
         return response(['status' => true, 'task_data' => $show], 200);
     }
@@ -110,28 +112,23 @@ class TaskController extends Controller
         $UserData = $request->UserData;
         $user = $UserData->username;
         $cards = $UserData->ShowCards;
+        #找出每張card的task,符合id的話就跳出回圈
         foreach ($cards as  $card) {
             $task = $card->ShowTasks->find($id);
             if (isset($task)) {
                 break;
             }
         }
-        // dd($task);
         if (!$task) {
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
 
-        // $task = Task::find($id);
-        // if (!$task) {
-        //     return response()->json(['status' => false, 'error' => 'task search not found'], 400);
-        // }
         $title = $task->title;
         $tag = $task->tag;
         $status = $task->status;
         $cardId = $task->card_id;
         $description = $task->description;
         $path = $task->image;
-        // dd(gettype($request->delete_image));
         if ($request->delete_image == true) {
             Storage::delete($path);
             $path = "";
@@ -161,7 +158,6 @@ class TaskController extends Controller
             Storage::delete($path);
             $file = $request->image;
             $path = $file->storeAs('images', 'task/' . $now . ' task' . $id . '.jpeg');
-            // $task->update(['image' => $path]);
         }
         $task->update([
             'title' => "$title", 'update_user' => $user,
@@ -180,19 +176,26 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $delete = Task::find($id);
-        if (!$delete) {
+        $UserData = $request->UserData;
+        $cards = $UserData->ShowCards;
+        #找出每張card的task,符合id的話就跳出回圈
+        foreach ($cards as  $card) {
+            $task = $card->ShowTasks->find($id);
+            if (isset($task)) {
+                break;
+            }
+        }
+        if (!$task) {
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
-        // dd($delete->image);
         # 刪除圖片
-        if (isset($delete->image)) {
-            $image = $delete->image;
+        if (isset($task->image)) {
+            $image = $task->image;
             Storage::delete($image);
         }
-        $delete->delete();
+        $task->delete();
         return response()->json(['status' => true], 200);
     }
     // public function upload(Request $request, $id)
