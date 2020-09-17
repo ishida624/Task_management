@@ -44,7 +44,7 @@ class TaskController extends Controller
         if (!$title) {
             $title = 'new task';
         }
-        $CardId = $request->card_id;
+        $CardId = (int)$request->card_id;
 
         // dd($CardId);
         $tag = $request->tag;
@@ -143,7 +143,7 @@ class TaskController extends Controller
             $status = $request->status;
         }
         if (isset($request->card_id)) {
-            $cardId = $request->card_id;
+            $cardId = (int)$request->card_id;
         }
         if (isset($request->description)) {
             $description = $request->description;
