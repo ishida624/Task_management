@@ -57,18 +57,15 @@ class TaskController extends Controller
         $UserData = $request->UserData;
         $user = $UserData->username;
         $cards = $UserData->ShowCards;
-        // dd($title);
-        // dd($cards->find($CardId)->ShowTasks);
         $card = $cards->find($CardId);
-        if (isset($card)) {
-            $task = $card->ShowTasks;
-        } else {
+        if (!$card) {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
+        // dd($card);
         // if (!Card::find($CardId)) {
         //     return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         // }
-        $store = $task[0]->create([
+        $store = Task::create([
             'title' => $title, 'status' => false,
             'create_user' => $user, 'update_user' => $user,
             'description' => $description, 'tag' => $tag,
@@ -110,11 +107,24 @@ class TaskController extends Controller
      */
     public function update(TasksRequest $request, $id)
     {
-        $user = $request->UserData->username;
-        $task = Task::find($id);
+        $UserData = $request->UserData;
+        $user = $UserData->username;
+        $cards = $UserData->ShowCards;
+        foreach ($cards as  $card) {
+            $task = $card->ShowTasks->find($id);
+            if (isset($task)) {
+                break;
+            }
+        }
+        // dd($task);
         if (!$task) {
             return response()->json(['status' => false, 'error' => 'task search not found'], 400);
         }
+
+        // $task = Task::find($id);
+        // if (!$task) {
+        //     return response()->json(['status' => false, 'error' => 'task search not found'], 400);
+        // }
         $title = $task->title;
         $tag = $task->tag;
         $status = $task->status;
