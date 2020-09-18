@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -17,7 +19,6 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $userData = $request->userData;
-        // $index = User::all();
         return $userData;
     }
 
@@ -29,7 +30,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -40,7 +40,8 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $userData = Users::find($id);
+        return $userData;
     }
 
     /**
@@ -75,7 +76,8 @@ class UserController extends Controller
             $password = $request->password;
             $hash = password_hash($password, PASSWORD_DEFAULT);
         }
-        $userData->update(['username' => $username, 'password' => $hash]);
+
+        $userData->update(['username' => $username, 'password' => $hash,]);
         return response()->json(['status' => true]);
     }
 
@@ -88,5 +90,31 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+    public function upload(Request $request)
+    {
+        $userData = $request->userData;
+        $username = $userData->username;
+
+        #上傳圖片
+        $now = Carbon::now();
+        if ($request->hasFile('image')) {
+            $image = $request->image;
+            Storage::delete($userData->image);
+            $path = $image->storeAs('images', 'user/' . $now . '_' . $username . '.jpeg');
+            $userData->update(['image' => $path]);
+        } else {
+            return response()->json(['status' => false, 'error' => 'upload error'], 400);
+        }
+        return response()->json(['status' => true,], 201);
+    }
+    public function deleteImage(Request $request)
+    {
+        $userData = $request->userData;
+        $path = $userData->image;
+        Storage::delete($path);
+        $path = "";
+        $userData->update(['image' => $path]);
+        return response()->json(['status' => true,], 200);
     }
 }
