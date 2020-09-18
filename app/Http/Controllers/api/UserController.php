@@ -19,7 +19,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $userData = $request->userData;
-        return $userData;
+        return response()->json(['status' => true, 'user_data' => $userData]);
     }
 
     /**
@@ -41,7 +41,7 @@ class UserController extends Controller
     public function show($id)
     {
         $userData = Users::find($id);
-        return $userData;
+        return response()->json(['status' => true, 'user_data' => $userData]);
     }
 
     /**
