@@ -51,8 +51,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update_user_data(Request $request)
     {
+        // dd('hello');
         $rules = [
             'username' => 'max:16',
             'password' => 'regex:/[0-9a-zA-Z]{8}/',

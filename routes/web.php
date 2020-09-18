@@ -19,13 +19,7 @@ Route::get('/', function () {
 Route::get('/update/{id}', function ($id) {
     return view('update', array('id' => $id));
 });
-Route::get('/todolist', 'Todocontroller@readTable');
-Route::middleware('auth')->group(function () {
-    Route::put("/update", 'Todocontroller@update');
-    Route::post('/create', 'Todocontroller@create');
-    Route::delete('/delete', 'Todocontroller@delete');
-    Route::put('/complete', 'Todocontroller@complete');
-});
+
 
 // Route::get('/', function () {
 //     return 'Hello World';
@@ -34,6 +28,6 @@ Route::middleware('auth')->group(function () {
 //     return view('about');
 // });
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
