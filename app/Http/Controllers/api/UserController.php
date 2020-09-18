@@ -14,10 +14,11 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $index = User::all();
-        return $index;
+        $userData = $request->userData;
+        // $index = User::all();
+        return $userData;
     }
 
     /**
@@ -64,9 +65,9 @@ class UserController extends Controller
             $error = $validator->errors()->first();
             return response()->json(['status' => false, 'error' => $error], 400);
         }
-        $UserData = $request->UserData;
-        $username = $UserData->username;
-        $password = $UserData->password;
+        $userData = $request->userData;
+        $username = $userData->username;
+        $password = $userData->password;
         if (isset($request->username)) {
             $username = $request->username;
         }
@@ -74,7 +75,7 @@ class UserController extends Controller
             $password = $request->password;
             $hash = password_hash($password, PASSWORD_DEFAULT);
         }
-        $UserData->update(['username' => $username, 'password' => $hash]);
+        $userData->update(['username' => $username, 'password' => $hash]);
         return response()->json(['status' => true]);
     }
 

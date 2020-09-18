@@ -19,8 +19,8 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $UserData = $request->UserData;
-        $cards = $UserData->ShowCards;
+        $userData = $request->userData;
+        $cards = $userData->ShowCards;
         foreach ($cards as $card) {
             $task[] = $card->ShowTasks;
         }
@@ -56,9 +56,9 @@ class TaskController extends Controller
             $description = "";
         }
 
-        $UserData = $request->UserData;
-        $user = $UserData->username;
-        $cards = $UserData->ShowCards;
+        $userData = $request->userData;
+        $user = $userData->username;
+        $cards = $userData->ShowCards;
         $card = $cards->find($CardId);
         if (!$card) {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
@@ -109,9 +109,9 @@ class TaskController extends Controller
      */
     public function update(TasksRequest $request, $id)
     {
-        $UserData = $request->UserData;
-        $user = $UserData->username;
-        $cards = $UserData->ShowCards;
+        $userData = $request->userData;
+        $user = $userData->username;
+        $cards = $userData->ShowCards;
         #找出每張card的task,符合id的話就跳出回圈
         foreach ($cards as  $card) {
             $task = $card->ShowTasks->find($id);
@@ -178,8 +178,8 @@ class TaskController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $UserData = $request->UserData;
-        $cards = $UserData->ShowCards;
+        $userData = $request->userData;
+        $cards = $userData->ShowCards;
         #找出每張card的task,符合id的話就跳出回圈
         foreach ($cards as  $card) {
             $task = $card->ShowTasks->find($id);

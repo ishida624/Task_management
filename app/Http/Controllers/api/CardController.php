@@ -19,12 +19,12 @@ class CardController extends Controller
      */
     public function index(Request $request)
     {
-        $UserData = $request->UserData;
-        $cards = $UserData->ShowCards;
+        $userData = $request->userData;
+        $cards = $userData->ShowCards;
         foreach ($cards as $card) {
             $card->ShowTasks;
         }
-        return response()->json(['status' => true, 'user_data' => $UserData], 200);
+        return response()->json(['status' => true, 'user_data' => $userData], 200);
     }
 
     /**
@@ -36,8 +36,8 @@ class CardController extends Controller
     public function store(CardsRequest $request)
     {
         $CardName = $request->card_name;
-        $user = $request->UserData->username;
-        $UserId = $request->UserData->id;
+        $user = $request->userData->username;
+        $UserId = $request->userData->id;
         $store = Card::create(['card_name' => $CardName, 'create_user' => $user,]);
         $CardId = $store->id;
         Groups::create(['users_id' => $UserId, 'card_id' => $CardId]);
@@ -52,8 +52,8 @@ class CardController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $UserData = $request->UserData;
-        $cards = $UserData->ShowCards->find($id);
+        $userData = $request->userData;
+        $cards = $userData->ShowCards->find($id);
         if (isset($cards)) {
             $cards->ShowTasks;
         } else {
@@ -71,9 +71,9 @@ class CardController extends Controller
      */
     public function update(CardsRequest $request, $id)
     {
-        $UserData = $request->UserData;
+        $userData = $request->userData;
         $CardName = $request->card_name;
-        $cards = $UserData->ShowCards->find($id);
+        $cards = $userData->ShowCards->find($id);
         if (isset($cards)) {
             $cards->ShowTasks;
         } else {
@@ -91,8 +91,8 @@ class CardController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $UserData = $request->UserData;
-        $cards = $UserData->ShowCards->find($id);
+        $userData = $request->userData;
+        $cards = $userData->ShowCards->find($id);
         if (isset($cards)) {
             $cards->ShowTasks;
         } else {

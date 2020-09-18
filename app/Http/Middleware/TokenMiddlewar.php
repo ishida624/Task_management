@@ -19,12 +19,12 @@ class TokenMiddlewar
     public function handle($request, Closure $next)
     {
         $token = $request->header('userToken');
-        $UserData = Users::where('remember_token', $token)->first();
+        $userData = Users::where('remember_token', $token)->first();
         #將User資訊合併進去request，傳到後端
-        $request->merge(['UserData' => $UserData]);
-        if (isset($UserData->remember_token)) {
-            // $tokenTime =  strtotime('+1 day', strtotime($UserData->updated_at));
-            $tokenTime = $UserData->updated_at->addDays(1);
+        $request->merge(['userData' => $userData]);
+        if (isset($userData->remember_token)) {
+            // $tokenTime =  strtotime('+1 day', strtotime($userData->updated_at));
+            $tokenTime = $userData->updated_at->addDays(1);
             // dd(Carbon::now(), $tokenTime);
             #判斷token是否過期
             if ($tokenTime < Carbon::now()) {
