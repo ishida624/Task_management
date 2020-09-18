@@ -23,9 +23,9 @@ class LogsInfo
         $method = $request->method();
         $ip = $request->ip();
         $path = $request->path();
-        Log::info($request->all());
-        if (isset($data->admin)) {
-            $username = $data->admin;
+        Log::info('request body', $request->all());
+        if (isset($data->username)) {
+            $username = $data->username;
             Log::info('request ', ['method' => "$method", 'path' => $path, 'ip' => "$ip", 'username' => "$username"]);
             return $next($request);
         } else {
