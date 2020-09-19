@@ -75,10 +75,11 @@ class TaskController extends Controller
         ]);
         // dd($store->card_id);
         #上傳圖片
-        $now = Carbon::now();
+        // $now = Carbon::now();
+        $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
             $file = $request->image;
-            $path = $file->storeAs('images', 'task/' . $now . ' task' . $store->id . '.jpeg');
+            $path = $file->storeAs('images', 'task/' . $now . '_task' . $store->id . '.jpeg');
             $store->update(['image' => $path]);
         }
 
@@ -152,12 +153,13 @@ class TaskController extends Controller
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
         #更新圖片
-        $now = Carbon::now();
+        // $now = Carbon::now();
+        $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
             #刪除原本的圖片
             Storage::delete($path);
             $file = $request->image;
-            $path = $file->storeAs('images', 'task/' . $now . ' task' . $id . '.jpeg');
+            $path = $file->storeAs('images', 'task/' . $now . '_task' . $id . '.jpeg');
         }
         $task->update([
             'title' => "$title", 'update_user' => $user,

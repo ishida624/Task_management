@@ -98,7 +98,8 @@ class UserController extends Controller
         $username = $userData->username;
 
         #上傳圖片
-        $now = Carbon::now();
+        // $now = Carbon::now();
+        $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
             $image = $request->image;
             Storage::delete($userData->image);
