@@ -18,4 +18,8 @@ class Users extends Model
     {
         return $this->belongsToMany('App\Card', 'groups', 'users_id', 'card_id');
     }
+    public function ShowGroups()
+    {
+        return $this->hasMany('App\Groups');
+    }
 }
