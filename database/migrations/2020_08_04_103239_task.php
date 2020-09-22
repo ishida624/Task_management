@@ -17,10 +17,10 @@ class Task extends Migration
             $table->id();
             $table->string('title');
             $table->boolean('status');
-            $table->string('create_user');
-            $table->string('update_user');
+            $table->char('create_user', 16);
+            $table->char('update_user', 16);
             $table->string('description')->nullable();
-            $table->string('tag')->nullable();
+            $table->char('tag', 16)->nullable();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('card_id');
             $table->foreign('card_id')->references('id')->on('card')->onDelete('cascade')->onUpdate('cascade');

@@ -15,7 +15,7 @@ class GroupController extends Controller
     {
         $userData = $request->userData;
         $groups = $userData->ShowGroups;
-        return $groups;
+        return response()->json(['status' => true, 'groups_data' => $groups]);
     }
 
     #顯示card 所有的使用者
@@ -26,7 +26,7 @@ class GroupController extends Controller
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
         $users = $card->ShowUsers;
-        return $users;
+        return response()->json(['status' => true, 'users_data' => $users]);
     }
 
     #新增user 進來群組
