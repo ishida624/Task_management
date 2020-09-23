@@ -38,11 +38,13 @@ class GroupController extends Controller
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
         // $cardOwner = $card->create_user;
-        $userId = $request->user_id;
-        $addUser = Users::find($userId);
+        $userEmail = $request->email;
+        $addUser = Users::where('email', $userEmail)->first();
+        // dd($addUser);
         if (!$addUser) {
             return response()->json(['status' => false, 'error' => 'user search not found'], 400);
         }
+        $userId = $addUser->id;
         $group = $card->ShowGroups->where('users_id', $userId)->first();
         if (isset($group)) {
             return response()->json(['status' => false, 'error' => 'user is already in card'], 400);
