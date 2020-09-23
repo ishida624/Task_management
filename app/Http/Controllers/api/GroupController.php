@@ -49,7 +49,9 @@ class GroupController extends Controller
         if (isset($group)) {
             return response()->json(['status' => false, 'error' => 'user is already in card'], 400);
         }
-        $create = Groups::create(['users_id' => $userId, 'card_id' => $cardId]);
+
+        $create = Groups::create(['users_id' => $userId, 'card_id' => $cardId,]);
+        $card->update(['private' => false]);
         return response()->json(['status' => true, 'group_data' => $create]);
     }
 
@@ -87,7 +89,11 @@ class GroupController extends Controller
             return response()->json(['status' => false, 'error' => 'you can not delete card owner'], 400);
         }
         // dd($deleteUser);
+        // return $card->ShowUsers->count();
         $delete->delete();
+        if ($card->ShowUsers->count() == 1) {
+            $card->update(['private' => true]);
+        }
         return response()->json(['status' => true,]);
     }
 }

@@ -38,7 +38,7 @@ class CardController extends Controller
         $CardName = $request->card_name;
         $user = $request->userData->username;
         $UserId = $request->userData->id;
-        $store = Card::create(['card_name' => $CardName, 'create_user' => $user,]);
+        $store = Card::create(['card_name' => $CardName, 'create_user' => $user, 'private' => true]);
         $CardId = $store->id;
         Groups::create(['users_id' => $UserId, 'card_id' => $CardId]);
         return response()->json(['status' => true, 'card_data' => $store], 201);

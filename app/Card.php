@@ -8,7 +8,10 @@ class Card extends Model
 {
     protected $table = 'card';
     public $primaryKey = 'id';
-    protected $fillable = ['card_name', 'create_user',];
+    protected $fillable = ['card_name', 'create_user', 'private'];
+    protected $casts = [
+        'private' => 'boolean',
+    ];
     public function ShowGroups()
     {
         return $this->hasMany('App\Groups');
