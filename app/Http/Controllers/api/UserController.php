@@ -69,7 +69,7 @@ class UserController extends Controller
         }
         $userData = $request->userData;
         $username = $userData->username;
-        $password = $userData->password;
+        $hash = $userData->password;
         if (isset($request->username)) {
             $username = $request->username;
         }
