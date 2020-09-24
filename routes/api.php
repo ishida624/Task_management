@@ -24,9 +24,9 @@ Route::post('/register', 'api\GetToken@register');
 Route::middleware('tokenAuth')->apiResource('card', 'api\CardController');
 Route::middleware('tokenAuth')->apiResource('task', 'api\TaskController');
 // Route::middleware('tokenAuth')->apiResource('user', 'api\UserController');
-Route::middleware('tokenAuth')->get('user/', 'api\UserController@index');
-Route::middleware('tokenAuth')->get('user/{id}', 'api\UserController@show');
-Route::middleware('tokenAuth')->put('user/', 'api\UserController@update_user_data');
+// Route::middleware('tokenAuth')->get('user/', 'api\UserController@index');
+Route::middleware('tokenAuth')->get('user', 'api\UserController@show');
+Route::middleware('tokenAuth')->put('user', 'api\UserController@update_user_data');
 Route::middleware('tokenAuth')->post('user/image', 'api\UserController@upload');
 Route::middleware('tokenAuth')->delete('user/image', 'api\UserController@deleteImage');
 

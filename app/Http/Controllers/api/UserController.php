@@ -11,26 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        $userData = $request->userData;
-        return response()->json(['status' => true, 'user_data' => $userData]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
 
     /**
      * Display the specified resource.
@@ -38,9 +18,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $userData = Users::find($id);
+        $email = $request->email;
+        $userData = Users::where('email', $email)->first();
         return response()->json(['status' => true, 'user_data' => $userData]);
     }
 
