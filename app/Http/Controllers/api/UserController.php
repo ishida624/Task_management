@@ -53,6 +53,16 @@ class UserController extends Controller
         $hash = $userData->password;
         if (isset($request->username)) {
             $username = $request->username;
+            // $userData = $request->userData;
+            $cards = $userData->ShowCards;
+            foreach ($cards as $card) {
+                $task = $card->ShowTasks;
+                $card->update(['create_user' => $username]);
+                foreach ($task as $value) {
+                    $value->update(['create_user' => $username]);
+                }
+            }
+            // dd($userData);
         }
         if (isset($request->password)) {
             $password = $request->password;
