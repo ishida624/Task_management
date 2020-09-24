@@ -22,14 +22,15 @@ class TaskController extends Controller
         $userData = $request->userData;
         $cards = $userData->ShowCards;
         foreach ($cards as $card) {
-            $task[] = $card->ShowTasks;
-        }
-        foreach ($task as $value1) {
-            foreach ($value1 as $value2) {
-                $data[] = $value2;
+            $task = $card->ShowTasks;
+            foreach ($task as $value) {
+                $tasks[] = $value;
             }
         }
-        return response()->json(['status' => true, 'task_data' => $data], 200);
+        if (isset($tasks) != true) {
+            $tasks = [];
+        }
+        return response()->json(['status' => true, 'task_data' => $tasks], 200);
     }
 
     /**
