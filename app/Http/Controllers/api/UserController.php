@@ -18,9 +18,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request)
+    public function show($email)
     {
-        $email = $request->email;
+        // $email = $request->email;
         $userData = Users::where('email', $email)->first();
         return response()->json(['status' => true, 'user_data' => $userData]);
     }
