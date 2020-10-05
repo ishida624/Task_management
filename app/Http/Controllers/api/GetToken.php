@@ -12,12 +12,11 @@ use Illuminate\Support\Facades\Mail;
 
 class GetToken extends Controller
 {
-    public function register(Request $register)
+    public function register(Request $request)
     {
-        $username = $register->username;
-        $password = $register->password;
-        $email = $register->email;
-        // $checkpassword = $register->checkpassword;
+        $username = $request->username;
+        $password = $request->password;
+        $email = $request->email;
         # validation check username and password formt
         $rules = [
             'username' => 'required|max:16|alpha_dash',
@@ -32,22 +31,23 @@ class GetToken extends Controller
             'password.required' => 'password should over 8 characters and only 0-9,a-z,A-Z. ',
             'email.email' => 'The email must be a valid email address. ',
         ];
-        $validator = Validator::make($register->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
         if ($validator->fails()) {
-            $error = $validator->errors()->getMessages();
-            $reason1 = "";
-            $reason2 = "";
-            $reason3 = "";
-            if (isset($error['username'][0])) {
-                $reason1 = $error['username'][0];
-            }
-            if (isset($error['password'][0])) {
-                $reason2 =  $error['password'][0];
-            }
-            if (isset($error['email'][0])) {
-                $reason3 =  $error['email'][0];
-            }
-            return response()->json(['status' => false, 'error' => $reason1 . $reason2 . $reason3], 400);
+            $error = $validator->errors()->first();
+
+            // $reason1 = "";
+            // $reason2 = "";
+            // $reason3 = "";
+            // if (isset($error['username'][0])) {
+            //     $reason1 = $error['username'][0];
+            // }
+            // if (isset($error['password'][0])) {
+            //     $reason2 =  $error['password'][0];
+            // }
+            // if (isset($error['email'][0])) {
+            //     $reason3 =  $error['email'][0];
+            // }
+            return response()->json(['status' => false, 'error' => $error], 400);
         }
 
         #尋找是否有相同帳號名
