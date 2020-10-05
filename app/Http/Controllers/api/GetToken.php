@@ -20,13 +20,14 @@ class GetToken extends Controller
         // $checkpassword = $register->checkpassword;
         # validation check username and password formt
         $rules = [
-            'username' => 'required|max:16',
+            'username' => 'required|max:16|alpha_dash',
             'password' => 'required|regex:/[0-9a-zA-Z]{8}/',
             'email' => 'required|email',
         ];
         $messages = [
             'username.required' => 'username can not null. ',
             'username.max' => 'username can not over 16 characters. ',
+            'username.alpha_dash' => 'username only have alpha-numeric characters, as well as dashes and underscores . ',
             'password.regex' => 'password should over 8 characters and only 0-9,a-z,A-Z. ',
             'password.required' => 'password should over 8 characters and only 0-9,a-z,A-Z. ',
             'email.email' => 'The email must be a valid email address. ',

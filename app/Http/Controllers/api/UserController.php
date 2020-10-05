@@ -34,13 +34,13 @@ class UserController extends Controller
      */
     public function update_user_data(Request $request)
     {
-        // dd('hello');
         $rules = [
-            'username' => 'max:16',
+            'username' => 'max:16|alpha_dash',
             'password' => 'regex:/[0-9a-zA-Z]{8}/',
         ];
         $messages = [
             'username.max' => 'username can not over 16 characters. ',
+            'username.alpha_dash' => 'username only have alpha-numeric characters, as well as dashes and underscores . ',
             'password.regex' => 'password should over 8 characters and only 0-9,a-z,A-Z. ',
         ];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -53,7 +53,6 @@ class UserController extends Controller
         $hash = $userData->password;
         if (isset($request->username)) {
             $username = $request->username;
-            // $userData = $request->userData;
             $cards = $userData->ShowCards;
             foreach ($cards as $card) {
                 $task = $card->ShowTasks;
@@ -62,7 +61,6 @@ class UserController extends Controller
                     $value->update(['create_user' => $username]);
                 }
             }
-            // dd($userData);
         }
         if (isset($request->password)) {
             $password = $request->password;
