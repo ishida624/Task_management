@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Users;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use App\Mail\OrderShipped;
+use Illuminate\Support\Facades\Mail;
 
 class GetToken extends Controller
 {
@@ -67,11 +69,10 @@ class GetToken extends Controller
         ]);
         return response()->json(['status' => true], 201);
     }
-    public function login(Request $login)
+    public function login(Request $request)
     {
-        $password = $login->password;
-        // $username = $login->username;
-        $email = $login->email;
+        $password = $request->password;
+        $email = $request->email;
         $dbUser = Users::where('email', $email)->first();
 
         #判斷帳號是否存在
@@ -93,10 +94,18 @@ class GetToken extends Controller
                 }
             } while ($sameToken);
 
-            Users::where('email', $email)->update(['remember_token' => $token]);
+            $dbUser->update(['remember_token' => $token]);
             return response()->json(['status' => true, 'login_data' => ['userToken' => $token]], 200);
         } else {
             return response()->json(['status' => false, 'error' => 'email or password false'], 400);
         }
+    }
+    public function mail()
+    {
+        $order = 'hello it is mail test';
+
+        // Ship order...
+
+        Mail::to('ishida624@gmail.com')->send(new OrderShipped($order));
     }
 }
