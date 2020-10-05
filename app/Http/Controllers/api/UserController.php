@@ -51,8 +51,13 @@ class UserController extends Controller
         $userData = $request->userData;
         $username = $userData->username;
         $hash = $userData->password;
+
         if (isset($request->username)) {
             $username = $request->username;
+            $User = Users::where('username', $username)->first();
+            if (isset($User)) {
+                return response()->json(['status' => false, 'error' => 'This account already exists'], 400);
+            }
             $cards = $userData->ShowCards;
             foreach ($cards as $card) {
                 $task = $card->ShowTasks;
