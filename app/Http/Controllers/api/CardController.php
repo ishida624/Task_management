@@ -92,11 +92,16 @@ class CardController extends Controller
     public function destroy(Request $request, $id)
     {
         $userData = $request->userData;
+        $userName = $userData->username;
         $cards = $userData->ShowCards->find($id);
         if (isset($cards)) {
             $cards->ShowTasks;
         } else {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
+        }
+        $cardOwner = $cards->create_user;
+        if ($userName != $cardOwner) {
+            return response()->json(['status' => false, 'error' => 'you are not card owner , you can not delete it'], 400);
         }
         // return $cards;
         $cards->delete();
