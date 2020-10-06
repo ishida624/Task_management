@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Mail\OrderShipped;
 use Illuminate\Support\Facades\Mail;
 
+use Illuminate\Notifications\Messages\MailMessage;
+
 class GetToken extends Controller
 {
     public function register(Request $request)
@@ -101,12 +103,28 @@ class GetToken extends Controller
             return response()->json(['status' => false, 'error' => 'email or password false'], 400);
         }
     }
-    public function mail()
+    public function mail($email)
     {
-        $order = 'hello it is mail test';
-
-        // Ship order...
-
-        Mail::to('ishida624@gmail.com')->send(new OrderShipped($order));
+        $user = Users::where('email', $email)->first();
+        if (!$user) {
+            return response()->json(['status' => false, 'error' => 'email false'], 400);
+        }
+        $userToken = $user->remember_token;
+        $url = "http://127.0.0.1:8003/api/password/change/$userToken";
+        $text = '點此修改密碼為 a00000000  ' . $url;
+        Mail::raw($text, function ($message) use ($email) {
+            $message->to($email)->subject('hiyaa');
+        });
+        return response()->json(['status' => true,], 200);
+    }
+    public function change_password($userToken)
+    {
+        $user = Users::where('remember_token', $userToken)->first();
+        if (!$user) {
+            return response()->json(['status' => false, 'error' => 'token false'], 400);
+        }
+        $hash = password_hash('a00000000', PASSWORD_DEFAULT);
+        $user->update(['password' => $hash]);
+        return response()->json(['status' => true, 'message' => 'password had be changed'], 200);
     }
 }

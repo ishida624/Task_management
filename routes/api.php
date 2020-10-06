@@ -35,3 +35,6 @@ Route::middleware('tokenAuth')->get('groups', 'api\GroupController@index');
 Route::middleware('tokenAuth')->get('groups/card/users/{card_id}', 'api\GroupController@card_users');
 Route::middleware('tokenAuth')->post('groups/{card_id}', 'api\GroupController@store');
 Route::middleware('tokenAuth')->delete('groups/{card_id}', 'api\GroupController@delete_user');
+
+Route::get('forget/password/{email}', 'api\GetToken@mail');
+Route::get('password/change/{userToken}', 'api\GetToken@change_password');
