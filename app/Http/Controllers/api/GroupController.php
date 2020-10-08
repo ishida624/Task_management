@@ -61,15 +61,12 @@ class GroupController extends Controller
         $userData = $request->userData;
         $user = $userData->username;
         $deleteUserId = $request->user_id;
-        // $card = Card::find($cardId)->ShowGroups;
         $card = $userData->ShowCards->find($cardId);
-        // dd($card);
         if (!$card) {
             return response()->json(['status' => false, 'error' => 'card search not found'], 400);
         }
         $cardOwner = $card->create_user;
         $cardGroup = $card->ShowGroups;
-        // dd($cardOwner);
         # 先判斷使用者是否為卡片創立者
         if ($user  == $cardOwner) {
             $Lv = 1;
@@ -77,20 +74,26 @@ class GroupController extends Controller
             $Lv = 2;
         }
 
-        // dd($Lv);
         $delete = $cardGroup->where('users_id', $deleteUserId)->first();
-        // dd($delete);
         if (!$delete) {
             return response()->json(['status' => false, 'error' => 'user search not found'], 400);
         }
         $deleteUser = Users::find($deleteUserId)->username;
-        // dd($deleteUser);
         if ($deleteUser == $cardOwner && $Lv == 2) {
             return response()->json(['status' => false, 'error' => 'you can not delete card owner'], 400);
         }
-        // dd($deleteUser);
-        // return $card->ShowUsers->count();
         $delete->delete();
+        #刪除後若card擁有者不見了，替換下一位card擁有者
+        $card = Card::find($cardId);
+        $group = $card->ShowGroups;
+        if ($deleteUser == $cardOwner) {
+            if (isset($group[0])) {
+                $nextOwner = $group->first()->ShowUsers->username;
+                $card->update(['create_user' => $nextOwner]);
+            } else {
+                $card->delete();
+            }
+        }
         if ($card->ShowUsers->count() == 1) {
             $card->update(['private' => true]);
         }
