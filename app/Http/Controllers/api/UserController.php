@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
+use Google\Cloud\Storage\StorageClient;
 
 class UserController extends Controller
 {
@@ -90,15 +91,23 @@ class UserController extends Controller
     {
         $userData = $request->userData;
         $username = $userData->username;
+        $email = $userData->email;
 
         #上傳圖片
-        // $now = Carbon::now();
-        $now = date('Y-m-d_H:i:s');
+        // $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
             $image = $request->image;
-            Storage::delete($userData->image);
-            $path = $image->storeAs('images', 'user/' . $now . '_' . $username . '.jpeg');
-            $userData->update(['image' => $path]);
+            // Storage::delete($userData->image);
+            // $path = $image->storeAs('images', 'user/' . $now . '_' . $username . '.jpeg');
+            // $userData->update(['image' => $path]);
+
+            # GCS
+            $disk = Storage::disk('gcs');
+            $disk->delete($userData->image);
+            $disk->put("image/$email", $image);
+            $path = $disk->files("image/$email");
+            $userData->update(['image' => $path[0]]);
+            // dd($path);
         } else {
             return response()->json(['status' => false, 'error' => 'upload error'], 400);
         }
@@ -107,8 +116,10 @@ class UserController extends Controller
     public function deleteImage(Request $request)
     {
         $userData = $request->userData;
-        $path = $userData->image;
-        Storage::delete($path);
+        // $path = $userData->image;
+        // Storage::delete($path);
+        $disk = Storage::disk('gcs');
+        $disk->delete($userData->image);
         $path = "";
         $userData->update(['image' => $path]);
         return response()->json(['status' => true,], 200);
