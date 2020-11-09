@@ -100,7 +100,7 @@ class UserController extends Controller
             // Storage::delete($userData->image);
             // $path = $image->storeAs('images', 'user/' . $now . '_' . $username . '.jpeg');
             // $userData->update(['image' => $path]);
-
+            // dd(__DIR__);
             # GCS
             $disk = Storage::disk('gcs');
             $disk->delete($userData->image);
