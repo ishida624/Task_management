@@ -74,14 +74,21 @@ class TaskController extends Controller
             'description' => $description, 'tag' => $tag,
             'card_id' => $CardId,
         ]);
-        // dd($store->card_id);
         #上傳圖片
-        // $now = Carbon::now();
-        $now = date('Y-m-d_H:i:s');
+        // $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
-            $file = $request->image;
-            $path = $file->storeAs('images', 'task/' . $now . '_task' . $store->id . '.jpeg');
-            $store->update(['image' => $path]);
+            // $file = $request->image;
+            // $path = $file->storeAs('images', 'task/' . $now . '_task' . $store->id . '.jpeg');
+            // $store->update(['image' => $path]);
+
+            #GCS
+            $disk = Storage::disk('gcs');
+            $image = $request->image;
+            // dd($image);
+            // $disk->delete($userData->image);
+            $disk->put("image/task/", $image);
+            $path = $disk->files("image/task/");
+            $store->update(['image' => $path[0]]);
         }
 
         return response()->json(['status' => true, 'task_data' => $store], 201);
@@ -158,16 +165,25 @@ class TaskController extends Controller
         $now = date('Y-m-d_H:i:s');
         if ($request->hasFile('image')) {
             #刪除原本的圖片
-            Storage::delete($path);
-            $file = $request->image;
-            $path = $file->storeAs('images', 'task/' . $now . '_task' . $id . '.jpeg');
+            // Storage::delete($path);
+            // $file = $request->image;
+            // $path = $file->storeAs('images', 'task/' . $now . '_task' . $id . '.jpeg');
+
+            #GCS
+            $disk = Storage::disk('gcs');
+            $image = $request->image;
+            // dd($image);
+            $disk->delete($path);
+            $disk->put("image/task/", $image);
+            $path = $disk->files("image/task/");
+            $task->update(['image' => $path[0]]);
         }
         $task->update([
             'title' => "$title", 'update_user' => $user,
             'title' => $title, 'status' => $status,
             'update_user' => $user,
             'description' => $description, 'tag' => $tag,
-            'image' => $path,
+            // 'image' => $path,
             'card_id' => $cardId,
         ]);
         return response()->json(['status' => true, 'task_data' => $task], 200);
