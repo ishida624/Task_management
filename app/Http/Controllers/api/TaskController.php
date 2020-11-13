@@ -82,12 +82,13 @@ class TaskController extends Controller
             // $store->update(['image' => $path]);
 
             #GCS
+            $taskId = $store->id;
             $disk = Storage::disk('gcs');
             $image = $request->image;
             // dd($image);
             // $disk->delete($userData->image);
-            $disk->put("image/task/", $image);
-            $path = $disk->files("image/task/");
+            $disk->put("image/task/task$taskId", $image);
+            $path = $disk->files("image/task/task$taskId");
             $store->update(['image' => $path[0]]);
         }
 
@@ -170,12 +171,13 @@ class TaskController extends Controller
             // $path = $file->storeAs('images', 'task/' . $now . '_task' . $id . '.jpeg');
 
             #GCS
+            $taskId = $task->id;
             $disk = Storage::disk('gcs');
             $image = $request->image;
-            // dd($image);
             $disk->delete($path);
-            $disk->put("image/task/", $image);
-            $path = $disk->files("image/task/");
+            $disk->put("image/task/task$taskId", $image);
+            $path = $disk->files("image/task/task$taskId");
+            // dd($path);
             $task->update(['image' => $path[0]]);
         }
         $task->update([

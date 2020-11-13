@@ -104,8 +104,8 @@ class UserController extends Controller
             # GCS
             $disk = Storage::disk('gcs');
             $disk->delete($userData->image);
-            $disk->put("image/user/", $image);
-            $path = $disk->files("image/user/");
+            $disk->put("image/user/$email", $image);
+            $path = $disk->files("image/user/$email");
             $userData->update(['image' => $path[0]]);
             // dd($path);
         } else {
