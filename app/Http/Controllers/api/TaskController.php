@@ -214,26 +214,13 @@ class TaskController extends Controller
         # 刪除圖片
         if (isset($task->image)) {
             $image = $task->image;
-            Storage::delete($image);
+            // Storage::delete($image);
+
+            # GCS
+            $disk = Storage::disk('gcs');
+            $disk->delete($image);
         }
         $task->delete();
         return response()->json(['status' => true], 200);
     }
-    // public function upload(Request $request, $id)
-    // {
-    //     #更新圖片
-    //     $now = Carbon::now();
-    //     if ($request->hasFile('image')) {
-    //         $file = $request->image;
-    //         $task = Task::find($id);
-    //         $path = $file->storeAs('images', 'task/' . $now . ' task' . $id . '.jpeg');
-    //         $task->update(['image' => $path]);
-    //         #刪除原本的圖片
-    //         Storage::delete($task->image);
-    //         $file = $request->image;
-    //         return response()->json(['status' => true,], 201);
-    //     } else {
-    //         return response()->json(['status' => false, 'error' => 'upload error'], 400);
-    //     }
-    // }
 }
