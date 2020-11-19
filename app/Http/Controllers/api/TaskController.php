@@ -140,8 +140,9 @@ class TaskController extends Controller
         $description = $task->description;
         $path = $task->image;
         if ($request->delete_image == true) {
-            Storage::delete($path);
-            $path = "";
+            $disk = Storage::disk('gcs');
+            $disk->delete($path);
+            $task->update(['image' => '']);
         }
         if (isset($request->title)) {
             $title = $request->title;
