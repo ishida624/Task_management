@@ -10,7 +10,7 @@ class Users extends Model
     // public $incrementing = 'false';
     public $primaryKey = 'id';
     // public $timestamps = false;
-    protected $fillable = ['username', 'password', 'email', 'image', 'remember_token'];
+    protected $fillable = ['username', 'password', 'email', 'image', 'remember_token', 'oauth'];
     protected $hidden = [
         'password', 'remember_token',
     ];

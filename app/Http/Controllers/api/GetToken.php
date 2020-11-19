@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\UserRequest;
+use Laravel\Socialite\Facades\Socialite;
+
 
 class GetToken extends Controller
 {
@@ -111,5 +113,35 @@ class GetToken extends Controller
         $hash = password_hash('a00000000', PASSWORD_DEFAULT);
         $user->update(['password' => $hash]);
         return response()->json(['status' => true, 'message' => 'password had be changed'], 200);
+    }
+    public function googleOauthCode()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+    public function googleOauthLogin()
+    {
+        $user = Socialite::driver('google')->user();
+        $name = $user->name;
+        $email = $user->email;
+        $token = $user->token;
+        $image = $user->getAvatar();
+        $dbUser = Users::where('email', $email)->first();
+
+        # 若db中沒有登入過就直接註冊
+        if (!$dbUser) {
+            $dbUser = Users::create([
+                'username' => $name,
+                'remember_token' => $token,
+                'email' => $email,
+                'oauth' => true,
+                'image' => $image,
+            ]);
+            // dd($dbUser);
+        }
+        #使用oauth登入時，email帳號已存在回復400
+        if ($dbUser->oauth != true) {
+            return response()->json(['status' => false, 'message' => 'This email is already exists'], 400);
+        }
+        return response()->json(['status' => true, 'login_data' => ['userToken' => $token]], 200);
     }
 }

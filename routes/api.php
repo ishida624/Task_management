@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\GetToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,3 +39,6 @@ Route::middleware('tokenAuth')->delete('groups/{card_id}', 'api\GroupController@
 
 Route::get('forget/password/{email}', 'api\GetToken@mail');
 Route::get('password/change/{userToken}', 'api\GetToken@change_password');
+
+Route::middleware('web')->get('oauth/login', 'api\GetToken@googleOauthLogin');
+Route::middleware('web')->get('oauth', 'api\GetToken@googleOauthCode');
