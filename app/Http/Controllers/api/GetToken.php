@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\UserRequest;
 use Laravel\Socialite\Facades\Socialite;
+use Google\Client;
+use Google_Service_Oauth2;
 
 
 class GetToken extends Controller
@@ -114,27 +116,41 @@ class GetToken extends Controller
         $user->update(['password' => $hash]);
         return response()->json(['status' => true, 'message' => 'password had be changed'], 200);
     }
-    public function googleOauthCode()
+    // public function googleOauthCode()
+    // {
+    //     return Socialite::driver('google')->redirect();
+    // }
+    public function googleOauthLogin(Request $request)
     {
-        return Socialite::driver('google')->redirect();
-    }
-    public function googleOauthLogin()
-    {
-        $user = Socialite::driver('google')->user();
-        $name = $user->name;
-        $email = $user->email;
-        $token = $user->token;
-        $image = $user->getAvatar();
-        $dbUser = Users::where('email', $email)->first();
+        $client = new Client;
+        // $idToken = $client->auth->idToken;
+        $idToken = $request->idToken;
+
+        ## 解開idToken若不是jwt則回傳400
+        $resource = $client->verifyIdToken($idToken);
+        if ($resource == false) {
+            return response()->json(['status' => false, 'message' => 'idToken is invalid'], 400);
+        }
+
+        ## db中尋找有沒有註冊過
+        $dbUser = Users::where('email', $resource['email'])->first();
+        ## 生產亂數token
+        $User = new Users;
+        $token = $User->GetToken();
+
+        ## 若db中有找到user，直接更新token
+        if (isset($dbUser)) {
+            $dbUser->update(['remember_token' => $token]);
+        }
 
         # 若db中沒有登入過就直接註冊
         if (!$dbUser) {
             $dbUser = Users::create([
-                'username' => $name,
+                'username' => $resource['name'],
                 'remember_token' => $token,
-                'email' => $email,
+                'email' => $resource['email'],
                 'oauth' => true,
-                'image' => $image,
+                'image' => $resource['picture'],
             ]);
             // dd($dbUser);
         }

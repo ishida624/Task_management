@@ -40,5 +40,5 @@ Route::middleware('tokenAuth')->delete('groups/{card_id}', 'api\GroupController@
 Route::get('forget/password/{email}', 'api\GetToken@mail');
 Route::get('password/change/{userToken}', 'api\GetToken@change_password');
 
-Route::middleware('web')->get('oauth/login', 'api\GetToken@googleOauthLogin');
-Route::middleware('web')->get('oauth', 'api\GetToken@googleOauthCode');
+Route::post('google/oauth/login', 'api\GetToken@googleOauthLogin');
+// Route::middleware('web')->get('oauth', 'api\GetToken@googleOauthCode');
