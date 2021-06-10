@@ -25,6 +25,8 @@ class CardAltertable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('card', function (Blueprint $table) {
+            $table->dropColumn('private');
+        });
     }
 }

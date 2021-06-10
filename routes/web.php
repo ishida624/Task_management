@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    // dd('hello');
+    return 'hello';
 });
 Route::get('/update/{id}', function ($id) {
     return view('update', array('id' => $id));

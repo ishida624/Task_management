@@ -17,8 +17,8 @@ class Task extends Migration
             $table->id();
             $table->string('title');
             $table->boolean('status');
-            $table->char('create_user', 16);
-            $table->char('update_user', 16);
+            $table->char('create_user', 50);
+            $table->char('update_user', 50);
             $table->string('description')->nullable();
             $table->char('tag', 16)->nullable();
             $table->string('image')->nullable();
@@ -35,6 +35,6 @@ class Task extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('task');
     }
 }
